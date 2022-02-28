@@ -59,3 +59,15 @@ voter_accounts = w3.eth.accounts
 voter_account = st.text_input("Input Personal Voting Address ", value=voter_accounts)
 if st.button("Mint VoteToken"):
         mint_contract.functions.AwardVoteToken(voter_account).transact({'from': mint_address, 'gas': 1000000})
+        
+        
+        
+# Streamlit checkbox function for use with candidates
+
+st.write('Select three known variables:')
+option_1 = st.checkbox('initial velocity (u)')
+option_2 = st.checkbox('final velocity (v)')
+option_3 = st.checkbox('acceleration (a)')
+option_4 = st.checkbox('time (t)')
+
+
