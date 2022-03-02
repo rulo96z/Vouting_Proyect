@@ -1,18 +1,15 @@
 //SPDX-License-Identifier: MIT
-pragma solidity  >= 0.4.22 < 0.8.0;
+pragma solidity ^0.8.0;
 
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/token/ERC20/ERC20.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/token/ERC20/ERC20Detailed.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/token/ERC20/ERC20Mintable.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC721/ERC721.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Counters.sol";
 
-contract Voting is ERC721, ERC20, ERC20Detailed, ERC20Mintable{
+contract Voting is ERC721{
         
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
-    address payable owner;
+    address public owner;
 
     struct candidate{
         uint id;
@@ -33,9 +30,8 @@ contract Voting is ERC721, ERC20, ERC20Detailed, ERC20Mintable{
         require(msg.sender == owner, "You do not have authorization!");
         _;
     }
-
-    constructor(address _token) ERC721("VoterRegistrationCard", "VRC") ERC20Detailed("VoteToken", "VOTE", 18) {
-        mint(msg.sender, 1000000000);
+    
+    constructor() ERC721("VoterRegistrationCard", "VRC") {
         owner = msg.sender;
     }
 
@@ -50,16 +46,6 @@ contract Voting is ERC721, ERC20, ERC20Detailed, ERC20Mintable{
         voterRegistrationCard[msg.sender] = newVoterId;
 
         return newVoterId;
-    }
-
-
-    function sendVoteToken() public {
-        require(registered[msg.sender] == true, "You have not registered to vote!");
-        require(balanceOf(msg.sender) < 1 , "You already have a VoteToken!");
-        require(!voted[msg.sender], "You have already recieved a VoteToken!");
-
-        increaseAllowance(msg.sender, 1);
-        transfer(msg.sender, 1);
     }
 
     function addCandidate(string memory candidateName) public restricted {
@@ -79,7 +65,6 @@ contract Voting is ERC721, ERC20, ERC20Detailed, ERC20Mintable{
 
         voted[msg.sender] = true;
         candidates[candidateID].voteCount++;
-        transferFrom(msg.sender, owner, 1);
 
         emit eventVote(candidateID);
     }
