@@ -38,11 +38,12 @@ def load_contract():
 
     # Get the contract
     contract = w3.eth.contract(
-        address=contract_address,
-        abi=voting_abi
+        address = w3.toChecksumAddress(contract_address),
+        abi = voting_abi
     )
     # Return the contract from the function
-    return contract
+    votacion = contract.functions.registerVoter().call()
+    return votacion
 
 #Streamlit Title
 st.title('Decentralized Voting Application')
