@@ -1,15 +1,18 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.12;
 
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC721/ERC721.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Counters.sol";
 
-contract Voting is ERC721{
+contract NFTVoting is ERC721{
         
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
     address public owner;
+
+    uint256 startTime = block.timestamp;
+    uint256 endTime = block.timestamp + 2 weeks;
 
     struct candidate{
         uint id;
@@ -35,12 +38,16 @@ contract Voting is ERC721{
         owner = msg.sender;
     }
 
-    function registerVoter() public returns (uint256){
+    function registerVoter(string memory voterInput) public returns (uint256){
         require(!registered[msg.sender], "You have already registered to vote!");
+        require(msg.sender != owner, "Owner can not register!");
+        require(block.timestamp >= startTime && block.timestamp <= endTime, "Registration is currently not avaliable!");
 
+        bytes memory input = bytes(voterInput);
+        
         _tokenIds.increment();
         uint256 newVoterId = _tokenIds.current();
-        _mint(msg.sender, newVoterId);
+        _safeMint(msg.sender, newVoterId, input);
         registrations.push(msg.sender);
         registered[msg.sender] = true;
         voterRegistrationCard[msg.sender] = newVoterId;
@@ -61,6 +68,7 @@ contract Voting is ERC721{
         require(msg.sender == ownerOf(voterRegistrationCard[msg.sender]), "You do not have a valid VoterRegistrationCard!");
         require(!voted[msg.sender], "You have already voted!");
         require(msg.sender != owner, "Owner can not vote!");
+        require(block.timestamp >= startTime && block.timestamp <= endTime, "Voting is currently not avaliable!");
         require(candidateID > 0 && candidateID <= candidateCount, "Please select a valid candidate!");
 
         voted[msg.sender] = true;
@@ -69,10 +77,23 @@ contract Voting is ERC721{
         emit eventVote(candidateID);
     }
 
-    function newVote() public restricted{
+    function newVote(uint256 _endTime) public restricted{
+        for (uint c=0; c<= candidateCount; c++){
+            delete(candidates[c]);
+        }
         candidateCount = 0;
         for (uint i=0; i< registrations.length ; i++){
             voted[registrations[i]] = false;
+        }
+        startTime = block.timestamp;
+        endTime = _endTime;
+    }
+
+    function deleteRegistrations() public restricted{
+        for (uint i=0; i< registrations.length ; i++){
+            registered[registrations[i]] = false;
+            delete(voterRegistrationCard[registrations[i]]);
+            delete(registrations[i]);
         }
     }
 }
