@@ -1,12 +1,22 @@
-pragma solidity ^0.5.0;
+//SPDX-License-Identifier: MIT
+pragma solidity ^0.8.12;
 
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/token/ERC20/ERC20.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/token/ERC20/ERC20Detailed.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/token/ERC20/ERC20Mintable.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol";
 
-contract VoteToken is ERC20, ERC20Detailed, ERC20Mintable{
-
-    constructor() ERC20Detailed("VoteToken", "VOTE", 18) public {
-        mint(msg.sender, 1000000000);
+contract VoteToken is ERC20 {
+    
+    constructor() ERC20("VoteToken", "VOTE") {
+        _mint(address(this), 1000000000);
     }
+
+    function getToken(address payable voter) public{
+        increaseAllowance(voter, 1);
+        voter.transfer(1);
+    }
+
+    function returnToken(address payable voter) public{
+        payable(address(this)).transfer(1);
+        decreaseAllowance(voter, 1);
+    }
+    
 }
