@@ -1,6 +1,6 @@
 # Vouting_Proyect
 
-![Ice Cream Pic](https://github.com/rulo96z/Vouting_Proyect/blob/master/image/download.jpg?raw=True)
+![Ice Cream Pic](https://github.com/rulo96z/Vouting_Proyect/blob/master/image/Eii7lfJWAAEQJ-n.png?raw=True)
 
 Create a voting dapp that will take in a unique verified public address that will be given a single coin to place a vote. The coin will be sent to a unique account associated with the vote that was placed. The vote will be signed and sent to the unique account. Then using that we can obtain a balance of those minted tokens for each unique account to get a live chart for the poll.
 
