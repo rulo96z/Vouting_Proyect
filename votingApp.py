@@ -30,7 +30,7 @@ w3 = Web3(Web3.HTTPProvider(os.getenv("WEB3_PROVIDER_URI")))
 def load_contract():
 
     # Load Voting ABI
-    with open(Path()) as f:
+    with open(Path('contracts/compiled/votingApp_abi.json')) as f:
         voting_abi = json.load(f)
 
     # Set the contract address (this is the address of the deployed contract)
@@ -43,39 +43,37 @@ def load_contract():
 
     # Return the contract from the function
     return contract
-
+contract = load_contract()
 #Streamlit Title
 st.title('Decentralized Voting Application')
 st.image("https://github.com/rulo96z/Vouting_Proyect/blob/master/image/Eii7lfJWAAEQJ-n.png?raw=True")
 
-# Registration form for participants 
-form = st.form("The Form")
-with form:
-    c1, c2, c3, c4 = st.columns(4)
-    with c1:
-        full_name = form.text_input("Full Name")
-    with c2:
-        email = form.text_input("Email")
-    with c3:
-        number_phone = form.text_input("Number Phone")
-    with c4:
-        nationality = form.text_input("Nationality")
-# Checkbox function for use with candidates
-    selector = st.selectbox("Vote for your favorate flavor", ['Chocolate', 'Vanilla', 'Mango', 'Strawberry'])
-    submitted = st.form_submit_button("Submit")
-    #if submitted: HERE WE NEED TO DELEVOP FARTHER I GOT STOCK! 
+voter_adddress = st.text_input("Voter Address")
+voter_name = st.text_input("Voter Name")
+voter_age = st.text_input("Voter Age")
+form = (f"{voter_adddress}{voter_name}{voter_age}")
+if st.button("Submit"):
+    contract.functions.registerVoter(form).transact({'from': voter_adddress, 'gas': 1000000})
+    st.write("Congratulations! You are Registered to Vote!")
+    st.balloons()
 
-
-# Load the contract
-mint_contract = load_contract()
-voting_contract = load_contract()
-
-### Award VotingToken
-
-voter_accounts = w3.eth.accounts
-
-#Mint Voting token
-voter_account = st.text_input("Input Personal Voting Address ", value=voter_accounts)
-if st.button("Mint VoteToken"):
-    mint_contract.functions.AwardVoteToken(voter_account).transact({'from': mint_address, 'gas': 1000000})
-
+st.empty()
+st.title("Vote For Your Candidate")
+# # chocolate_wallet_address = os.getenv("CHOCOLATE_WALLET")
+# # vanilla_wallet_address = os.getenv("VANILLA_WALLET")
+# # strawberry_wallet_address = os.getenv("STRAWBERRY_WALLET")
+# Candidate1 = ["Chocolate", chocolate]#_wallet_address]
+# Candidate2 = ["Vanilla", vanilla]#_wallet_address]
+# Candidate3 = ["Strawberry", strawberry]#_wallet_address]
+# candidate_vote = st.radio("Choose Your Candidate",
+#     ([Candidate1[0],
+#     Candidate2[0],
+#     Candidate3[0]]))
+# if st.button("Submit Your Vote!"):
+#     contract.functions.vote(candidate_vote)
+# if candidate_vote == Candidate1:
+#     contract.functions.vote(candidate_vote)
+# if candidate_vote == Candidate2:
+#     contract.functions.vote(candidate_vote)
+# if candidate_vote == Candidate3:
+#     contract.functions.vote(candidate_vote)
