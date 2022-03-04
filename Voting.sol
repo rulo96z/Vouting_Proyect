@@ -1,18 +1,20 @@
 //SPDX-License-Identifier: MIT
-pragma solidity  >= 0.4.22 < 0.8.0;
+pragma solidity  ^0.8.12;
 
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/token/ERC20/ERC20.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/token/ERC20/ERC20Detailed.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/token/ERC20/ERC20Mintable.sol";
+import "./VoteToken.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC721/ERC721.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Counters.sol";
 
-contract Voting is ERC721, ERC20, ERC20Detailed, ERC20Mintable{
+contract Voting is ERC721{
         
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
     address payable owner;
+    VoteToken token;
+
+    uint256 startTime = block.timestamp;
+    uint256 endTime = block.timestamp + 2 weeks;
 
     struct candidate{
         uint id;
@@ -34,17 +36,20 @@ contract Voting is ERC721, ERC20, ERC20Detailed, ERC20Mintable{
         _;
     }
 
-    constructor(address _token) ERC721("VoterRegistrationCard", "VRC") ERC20Detailed("VoteToken", "VOTE", 18) {
-        mint(msg.sender, 1000000000);
-        owner = msg.sender;
+    constructor(address _token) ERC721("VoterRegistrationCard", "VRC"){
+        owner = payable(msg.sender);
+        token = VoteToken(_token);
     }
 
-    function registerVoter() public returns (uint256){
+    function registerVoter(string memory input) public returns (uint256){
         require(!registered[msg.sender], "You have already registered to vote!");
+        require(msg.sender != owner, "Owner can not register to vote!");
+
+        bytes memory bInput = bytes(input);
 
         _tokenIds.increment();
         uint256 newVoterId = _tokenIds.current();
-        _mint(msg.sender, newVoterId);
+        _safeMint(msg.sender, newVoterId, bInput);
         registrations.push(msg.sender);
         registered[msg.sender] = true;
         voterRegistrationCard[msg.sender] = newVoterId;
@@ -57,9 +62,9 @@ contract Voting is ERC721, ERC20, ERC20Detailed, ERC20Mintable{
         require(registered[msg.sender] == true, "You have not registered to vote!");
         require(balanceOf(msg.sender) < 1 , "You already have a VoteToken!");
         require(!voted[msg.sender], "You have already recieved a VoteToken!");
+        require(msg.sender != owner, "Owner can not vote!");
 
-        increaseAllowance(msg.sender, 1);
-        transfer(msg.sender, 1);
+        token.getToken(payable(msg.sender));
     }
 
     function addCandidate(string memory candidateName) public restricted {
@@ -79,15 +84,28 @@ contract Voting is ERC721, ERC20, ERC20Detailed, ERC20Mintable{
 
         voted[msg.sender] = true;
         candidates[candidateID].voteCount++;
-        transferFrom(msg.sender, owner, 1);
+        token.returnToken(payable(msg.sender));
 
         emit eventVote(candidateID);
     }
 
-    function newVote() public restricted{
+    function newVote(uint256 _endTime) public restricted{
+        for (uint c=0; c<= candidateCount; c++){
+            delete(candidates[c]);
+        }
         candidateCount = 0;
         for (uint i=0; i< registrations.length ; i++){
             voted[registrations[i]] = false;
+        }
+        startTime = block.timestamp;
+        endTime = _endTime;
+    }
+
+    function deleteRegistrations() public restricted{
+        for (uint i=0; i< registrations.length ; i++){
+            registered[registrations[i]] = false;
+            delete(voterRegistrationCard[registrations[i]]);
+            delete(registrations[i]);
         }
     }
 }
