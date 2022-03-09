@@ -96,6 +96,14 @@ contract NFTVoting is ERC721{
         return (voteCounts, names);
     }
 
+    function getName(uint id) public view returns(string memory){
+        return candidates[id].name;
+    }
+
+    function getVoteCount(uint id) public view returns(uint){
+        return candidates[id].voteCount;
+    }
+
     function newVote(uint256 _endTime) public restricted{
         for (uint c=0; c<= candidateCount; c++){
             delete(candidates[c]);
