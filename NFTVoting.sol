@@ -64,6 +64,14 @@ contract NFTVoting is ERC721{
         candidates[id] = candidate(id, newCandidateName, candidates[id].voteCount);
     }
 
+    function numCandidates() public view returns(uint){
+        return candidateCount;
+    }
+
+    function timeLeft() public view returns(uint){
+        return endTime - block.timestamp;
+    }
+
     function vote(uint candidateID) public {
         require(msg.sender == ownerOf(voterRegistrationCard[msg.sender]), "You do not have a valid VoterRegistrationCard!");
         require(!voted[msg.sender], "You have already voted!");
