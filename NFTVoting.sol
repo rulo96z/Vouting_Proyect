@@ -1,5 +1,6 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.12;
+pragma experimental ABIEncoderV2;
 
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC721/ERC721.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Counters.sol";
@@ -83,6 +84,16 @@ contract NFTVoting is ERC721{
         candidates[candidateID].voteCount++;
 
         emit eventVote(candidateID);
+    }
+
+    function getCandidates() public view returns(uint [] memory, string [] memory){
+        uint [] memory voteCounts;
+        string [] memory names;
+        for (uint i=0; i<= candidateCount; i++){
+            voteCounts[i] = candidates[i].voteCount;
+            names[i] = candidates[i].name;
+        }
+        return (voteCounts, names);
     }
 
     function newVote(uint256 _endTime) public restricted{
