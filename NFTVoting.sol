@@ -37,10 +37,10 @@ contract NFTVoting is ERC721{
     
     constructor() ERC721("VoterRegistrationCard", "VRC") {
         owner = msg.sender;
-        addCandidate("Vanilla");
-        addCandidate("Mint Chocolate");
-        addCandidate("Strawberry");
         addCandidate("Chocolate");
+        addCandidate("Vanilla");
+        addCandidate("Strawberry");
+        addCandidate("Mint Chocolate");
         addCandidate("Cookies & Cream");
 
     }
@@ -96,11 +96,11 @@ contract NFTVoting is ERC721{
         return candidateCount;
     }
     
-    function getCandName(uint id) public view returns(string memory){
+    function getCandidateName(uint id) public view returns(string memory){
         return candidates[id].name;
     }
 
-    function getCandVoteCount(uint id) public view returns(uint){
+    function getCandidateVoteCount(uint id) public view returns(uint){
         return candidates[id].voteCount;
     }
 
