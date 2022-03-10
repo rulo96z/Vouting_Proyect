@@ -40,9 +40,6 @@ contract NFTVoting is ERC721{
         addCandidate("Chocolate");
         addCandidate("Vanilla");
         addCandidate("Strawberry");
-        addCandidate("Mint Chocolate");
-        addCandidate("Cookies & Cream");
-
     }
 
     function registerVoter(string memory voterInput) public returns (uint256){
