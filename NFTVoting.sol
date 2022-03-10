@@ -92,7 +92,7 @@ contract NFTVoting is ERC721{
         emit eventVote(candidateID);
     }
 
-    function getCandidateCount() public view returns(uint){
+    function getNumberOfCandidates() public view returns(uint){
         return candidateCount;
     }
     
