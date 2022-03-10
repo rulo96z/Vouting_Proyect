@@ -33,7 +33,6 @@ def load_contract():
     # Load Voting ABI
     with open(Path('contracts/compiled/votingApp_abi.json')) as f:
         voting_abi = json.load(f)
-        #st.write(voting_abi)
     # Set the contract address (this is the address of the deployed contract)
     contract_address = os.getenv("SMART_CONTRACT_ADDRESS")
     # Get the contract
@@ -50,7 +49,7 @@ contract = load_contract()
 st.title('Decentralized Voting Application')
 st.image("https://github.com/rulo96z/Vouting_Proyect/blob/master/image/Eii7lfJWAAEQJ-n.png?raw=True")
 
-###########################################################
+#########################KYC Form##################################
 
 with st.expander("KYC Form"):
     st.subheader("KYC Form")
@@ -85,13 +84,13 @@ with st.expander("Voter Validation"):
 with st.expander("Vote For Your Candidate"):
     st.empty()
     st.title("Vote For Your Candidate")
-    candidate1 = contract.functions.getCandidateName(1).call()
-    candidate2 = contract.functions.getCandidateName(2).call()
-    candidate3 = contract.functions.getCandidateName(3).call()
+    candidate1 = contract.functions.getName(1).call()
+    candidate2 = contract.functions.getName(2).call()
+    candidate3 = contract.functions.getName(3).call()
     candidates = (f"{candidate1}, {candidate2}, {candidate3}")
     
     #create columns
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
 
     with col1:
         st.header(candidate1)
@@ -114,10 +113,11 @@ with st.expander("Vote For Your Candidate"):
             contract.functions.vote(3).transact({'from': voter_adddress, 'gas': 1000000})
             st.write("You have chosen Strawberry")
 
+####################Visualize Voting Results########################
 st.header("Voting Results")
 candidate1_results = contract.functions.getVoteCount(1).call()
 candidate2_results = contract.functions.getVoteCount(2).call()
 candidate3_results = contract.functions.getVoteCount(3).call()
 df=pd.DataFrame({"Index":[candidate1,candidate2,candidate3], "Results":[candidate1_results,candidate2_results,candidate3_results]}).set_index(["Index"])
-st.bar_chart(df)
+st.bar_chart(df, width=600, height=240)
 
