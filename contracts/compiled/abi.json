@@ -223,12 +223,25 @@
 				"type": "uint256"
 			}
 		],
-		"name": "getCandName",
+		"name": "getName",
 		"outputs": [
 			{
 				"internalType": "string",
 				"name": "",
 				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getNumberOfCandidates",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
@@ -242,20 +255,7 @@
 				"type": "uint256"
 			}
 		],
-		"name": "getCandVoteCount",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "getCandidateCount",
+		"name": "getVoteCount",
 		"outputs": [
 			{
 				"internalType": "uint256",
