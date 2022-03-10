@@ -37,9 +37,6 @@ contract NFTVoting is ERC721{
     
     constructor() ERC721("VoterRegistrationCard", "VRC") {
         owner = msg.sender;
-        addCandidate("Chocolate");
-        addCandidate("Vanilla");
-        addCandidate("Strawberry");
     }
 
     function registerVoter(string memory voterInput) public returns (uint256){
