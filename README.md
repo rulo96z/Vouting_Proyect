@@ -33,7 +33,7 @@ Additional updates/ uploads for usability was added by [Anthony Zamora](mailto:f
 
 Additional updates/ uploads for usability was added by [Thomas Leahy](mailto:thomasleahy6@gmail.com)
 
-Additional updates/ uploads for usability was added by [Raul Nogales](mailto:rulo.nogales@nogalesinvestments.com)
+Additional updates/ uploads for usability was added by [Raul Nogales](mailto:raul@nogalesfundmgmt.com)
 
 ---
 # License
